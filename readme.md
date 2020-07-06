@@ -202,6 +202,7 @@ It will open the application toplogy screen.
 
 <img src="images/05-1-resources-menu.png">
 
+
 The list of resources displayed.
 
 <img src="images/05-2-resources-list.png">
