@@ -1,4 +1,4 @@
-# Installing upro App in IBM Cloud Pak for Multicloud Management Version 1.3.0/1.3.2 
+# Installing Upro App in IBM Cloud Pak for Multicloud Management Version 1.3.0/1.3.2 
 
 ## Download
 
@@ -6,7 +6,7 @@ Download this project from git
 
 ## Preparation
 
-### 1. Placement policy Changes.
+### 1. Change the Placement rule.
 
 a. Open the file `src/03-subscription/21-placement.yaml`. The cluster related details should be like this.
 
@@ -19,7 +19,7 @@ a. Open the file `src/03-subscription/21-placement.yaml`. The cluster related de
         - ocp43-mcm-gan-a
 ```
 
-b. Replace the value `ocp43-mcm-gan-a` value your cluster name.
+b. Replace the value `ocp43-mcm-gan-a` with your cluster name.
 
 
 ### 2. Obtain the Hub server config info.
@@ -65,13 +65,11 @@ keyfile.p12: dGVzdA==
 
 ## Installation
 
-### 1. Create Namespace in Hub Cluster as 
+### 1. Create Namespace in Hub Cluster
 
-#### 1. Log in to the hub cluster as an **account administrator**
+#### 1. Log in to the hub cluster as an `account administrator`
 
-Login into hub cluster as an **account administrator**.
-
-Note: It is a account administrator not a cluster administrator.
+Run the below command.
 
 ```
 cloudctl login -a <cluster URL> -u <account-admin-username> -p <account-admin-password> --skip-ssl-validation -c <account ID or name> -n <namespace>
@@ -94,7 +92,7 @@ sh 11-install-namespace-in-hub.sh
 
 #### 3. Patch the right `account id` in the namespace.
 
-Replace `2a82-45f9` right `account id` and run the below command.
+Replace `2a82-45f9` with right `account id` and run the below command.
 
 ```
 kubectl annotate --overwrite namespace upro-icam-channel-ns mcm.ibm.com/accountID='2a82-45f9'
@@ -104,7 +102,7 @@ kubectl annotate --overwrite namespace upro-icam-app-ns mcm.ibm.com/accountID='2
 
 #### 4. Log in to the hub cluster as an **account operator**
 
-Loginin into hub cluster as an **account operator**. If you don't have operator user, stick to the account administrator  user.
+Login into hub cluster as an **account operator**. If you don't have operator user, stick to the account administrator  user.
 
 ```
 cloudctl login -a <cluster URL> -u <account-admin-username> -p <account-operator-password> --skip-ssl-validation -c <account ID or name> -n <namespace>
@@ -120,7 +118,7 @@ cloudctl login -a <cluster URL> -u <account-admin-username> -p <account-operator
 sh 01-install.sh
 ```
 
-The application get installed in the mcm hub. Based the placement rule the deployables are placed on teh right managed cluster.
+The application get installed in the mcm hub. Based the placement rule the deployables are placed on the right managed cluster.
 
 ## Accessing the installed application
 
@@ -151,22 +149,21 @@ http://upro-bankweb-upro-icam-app-ns.gdomain.cloud
 
 ### Generate Load
 
+Lets generate some load to see the golden signals.
+
 1. Open the file `install/51-continous-trafic.sh`.
 
-2. In the above file, replace the `http://upro-bankweb-upro-icam-appdomain.cloud` with you route that you got in the above step.
+2. In the above file, replace the `http://upro-bankweb-upro-icam-appdomain.cloud` with the route that you got in the above step.
 
 3. Goto `install` folder in command prompt
 
-4. Run the below command to install to generate load to the deployed app.
+4. Run the below command to generate load to the deployed app.
 
 ```
 sh 51-continous-trafic.sh
 ```
 
 After few minute of run, you can put Ctrl+C to stop the execution.
-
-<img src="images/menu.png">
-
 
 ### View Applications
 
@@ -203,13 +200,16 @@ It will open the application toplogy screen.
 
 1. Click on `Monitor Health > Infrastructure Monitoring` menu to open the monitoring screen.
 
+<img src="images/05-1-resources-menu.png">
+
 The list of resources displayed.
 
-<img src="images/05-1-resources-menu.png">
+<img src="images/05-2-resources-list.png">
 
 2. Click on `Kubernetes Service` link.
 
-<img src="images/05-2-resources-list.png">
+List of kubernetes services displayed.
+<img src="images/05-3-resources-kubernetes-services.png">
 
 3. Click on `Upro bankweb Service` link.
 
