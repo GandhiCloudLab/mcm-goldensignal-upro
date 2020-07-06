@@ -1,5 +1,22 @@
-# Installing Upro App in IBM Cloud Pak for Multicloud Management Version 1.3.0/1.3.2 
+# Installing Upro App to demonstrate MCM Golden Siganls
 
+UPro is a sample banking application to demonstrate IBM Cloud Pak for Multicloud Management's run time data collector which collects and sends golden singals to the MCM Hub.
+
+The Upro app is instrumented with J2SE Runtime data collector.
+
+To know how to instrument the runtime data collector in to your application, refer 
+https://www.ibm.com/support/knowledgecenter/SSFC4F_1.3.0/icam/config_j2se_dc_intro.html
+
+The version of the IBM Cloud Pak for Multicloud Management used here is 1.3.0/1.3.2
+
+## Prerequisite
+
+1. A managed cluster should have been imported into MCM hub. Refer : https://github.com/GandhiCloudLab/mcm-info/tree/master/03-importing-cluster
+
+2. A managed cluster should have been installed with monitoring klusterlet. Refer : https://github.com/GandhiCloudLab/mcm-info/tree/master/04-install-monitoring-kluesterlet
+
+
+---------------
 
 ## 1. Preparation
 
