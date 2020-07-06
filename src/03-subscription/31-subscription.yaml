@@ -1,0 +1,132 @@
+---
+# Source: upro-subscription/templates/31-subscription.yaml
+apiVersion: app.ibm.com/v1alpha1
+kind: Subscription
+metadata:
+  name: subscription-upro-common
+  namespace: upro-icam-subscription-ns
+  labels:
+    app: upro-application
+    subapp: common
+spec:
+  channel: upro-icam-channel-ns/upro-channel
+  packageFilter:
+    labelSelector:
+      matchLabels:
+        app: upro-application
+        subapp: common
+  placement:
+    placementRef:
+      name: upro-common
+      kind: PlacementRule
+      group: app.ibm.com
+  overrides:
+  - clusterName: "/"
+    clusterOverrides:
+    - path: "metadata.namespace"
+      value: upro-icam-app-ns      
+---
+# Source: upro-subscription/templates/31-subscription.yaml
+apiVersion: app.ibm.com/v1alpha1
+kind: Subscription
+metadata:
+  name: subscription-upro-bankweb
+  namespace: upro-icam-subscription-ns
+  labels:
+    app: upro-application
+    subapp: bankweb        
+spec:
+  channel: upro-icam-channel-ns/upro-channel
+  packageFilter:
+    labelSelector:
+      matchLabels:
+        app: upro-application
+        subapp: bankweb        
+  placement:
+    placementRef:
+      name: upro-bankweb
+      kind: PlacementRule
+      group: app.ibm.com
+  overrides:
+  - clusterName: "/"
+    clusterOverrides:
+    - path: "metadata.namespace"
+      value: upro-icam-app-ns      
+---
+apiVersion: app.ibm.com/v1alpha1
+kind: Subscription
+metadata:
+  name: subscription-upro-commission
+  namespace: upro-icam-subscription-ns
+  labels:
+    app: upro-application
+    subapp: commission        
+spec:
+  channel: upro-icam-channel-ns/upro-channel
+  packageFilter:
+    labelSelector:
+      matchLabels:
+        app: upro-application
+        subapp: commission        
+  placement:
+    placementRef:
+      name: upro-commission
+      kind: PlacementRule
+      group: app.ibm.com
+  overrides:
+  - clusterName: "/"
+    clusterOverrides:
+    - path: "metadata.namespace"
+      value: upro-icam-app-ns
+---
+apiVersion: app.ibm.com/v1alpha1
+kind: Subscription
+metadata:
+  name: subscription-upro-interest
+  namespace: upro-icam-subscription-ns
+  labels:
+    app: upro-application
+    subapp: interest        
+spec:
+  channel: upro-icam-channel-ns/upro-channel
+  packageFilter:
+    labelSelector:
+      matchLabels:
+        app: upro-application
+        subapp: interest        
+  placement:
+    placementRef:
+      name: upro-interest
+      kind: PlacementRule
+      group: app.ibm.com
+  overrides:
+  - clusterName: "/"
+    clusterOverrides:
+    - path: "metadata.namespace"
+      value: upro-icam-app-ns
+---
+apiVersion: app.ibm.com/v1alpha1
+kind: Subscription
+metadata:
+  name: subscription-upro-payment
+  namespace: upro-icam-subscription-ns
+  labels:
+    app: upro-application
+    subapp: payment        
+spec:
+  channel: upro-icam-channel-ns/upro-channel
+  packageFilter:
+    labelSelector:
+      matchLabels:
+        app: upro-application
+        subapp: payment        
+  placement:
+    placementRef:
+      name: upro-payment
+      kind: PlacementRule
+      group: app.ibm.com
+  overrides:
+  - clusterName: "/"
+    clusterOverrides:
+    - path: "metadata.namespace"
+      value: upro-icam-app-ns

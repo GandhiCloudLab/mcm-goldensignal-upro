@@ -1,0 +1,117 @@
+---
+apiVersion: app.ibm.com/v1alpha1
+kind: Deployable
+metadata:
+  name: upro-deployable-config-map
+  namespace: upro-icam-channel-ns
+  annotations:
+    app.ibm.com/is-local-deployable: "false"  
+  labels:
+    app: upro-application
+    subapp: common
+spec:
+  template:
+    kind: ConfigMap
+    apiVersion: v1
+    metadata:
+      name: upro-config-map
+      namespace: upro-icam-app-ns
+      labels:
+        app: upro-application
+        subname: configmap
+    type: Opaque
+    data:
+      service.url.commission: FROM_KUBERNETES_SERVICE
+      service.url.interest: FROM_KUBERNETES_SERVICE
+      service.url.payment: FROM_KUBERNETES_SERVICE
+---
+apiVersion: app.ibm.com/v1alpha1
+kind: Deployable
+metadata:
+  name: upro-deployable-lwdc-clusterrole
+  namespace: upro-icam-channel-ns
+  annotations:
+    app.ibm.com/is-local-deployable: "false"  
+  labels:
+    app: upro-application
+    subapp: common
+spec:
+  template:
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRole
+    metadata:
+      name: upro-lwdc-clusterrole
+      labels:
+        app: upro-application
+        subname: lwdc-clusterrole
+    rules:
+    - apiGroups:
+      - ""
+      - "apps"
+      - "extensions"
+      resources:
+      - nodes
+      - services
+      - configmaps
+      - pods
+      - deployments
+      - endpoints
+      - clusters
+      verbs:
+      - list
+      - get
+---
+apiVersion: app.ibm.com/v1alpha1
+kind: Deployable
+metadata:
+  name: upro-deployable-lwdc-clusterrolebinding
+  namespace: upro-icam-channel-ns
+  annotations:
+    app.ibm.com/is-local-deployable: "false"  
+  labels:
+    app: upro-application
+    subapp: common
+spec:
+  template:
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRoleBinding
+    metadata:
+      name: upro-lwdc-rolebinding
+      namespace: upro-icam-app-ns
+      labels:
+        app: upro-application
+        subname: lwdc-rolebinding
+    subjects:
+      - kind: User
+        name: system:serviceaccount:upro-icam-app-ns:default
+        apiGroup: rbac.authorization.k8s.io
+    roleRef:
+      kind: ClusterRole
+      name: upro-lwdc-clusterrole
+      apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: app.ibm.com/v1alpha1
+kind: Deployable
+metadata:
+  name: upro-deployable-icam-server-secret
+  namespace: upro-icam-channel-ns
+  annotations:
+    app.ibm.com/is-local-deployable: "false"  
+  labels:
+    app: upro-application
+    subapp: common
+spec:
+  template:
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: icam-server-secret
+      namespace: upro-icam-app-ns
+      labels:
+        app: upro-application
+        subname: secret
+    data:
+      global.environment: dGVzdA==
+      keyfile.jks: dGVzdA==
+      keyfile.kdb: dGVzdA==
+      keyfile.p12: dGVzdA==

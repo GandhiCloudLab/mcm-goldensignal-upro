@@ -1,0 +1,141 @@
+---
+# Source: upro-channel/templates/21-deployable-web.yaml
+apiVersion: app.ibm.com/v1alpha1
+kind: Deployable
+metadata:
+  name: upro-deployable-deployment-web
+  namespace: upro-icam-channel-ns
+  annotations:
+    app.ibm.com/is-local-deployable: "false"
+  labels:
+    app: upro-application
+    subapp: bankweb
+spec:
+  template:
+    kind: Deployment
+    apiVersion: apps/v1
+    metadata:
+      name: upro-bankweb
+      namespace: upro-icam-app-ns
+      labels:
+        app: upro-application
+        subname: bankweb
+    spec:
+      selector:
+        matchLabels:
+          app: upro-application
+          subname: bankweb
+      replicas: 1
+      template:
+        metadata:
+          labels:
+            app: upro-application
+            subname: bankweb
+        spec:
+          containers:
+            - name: container-web
+              image: "gandhicloudlab/upro-bankweb-icam-130-2:latest"
+              imagePullPolicy: Always
+              ports:
+              - name: my-http
+                containerPort: 9030
+                protocol: TCP
+              - name: https
+                containerPort: 8083
+              env:
+              - name: LOG_REST_PAYLOAD
+                value: "true"
+              - name: IBM_APM_RESTCLIENT_LOGLEVEL
+                value: DEBUG_MAX
+              - name: OPENTRACING_ENABLED
+                value: "true"
+              - name: JAEGER_SAMPLER_TYPE
+                value: probabilistic
+              - name: JAEGER_SAMPLER_PARAM
+                value: "1"
+              - name: LATENCY_SAMPLER_PARAM
+                value: "1"
+              - name: service.url.commission
+                valueFrom:
+                  configMapKeyRef:
+                    name: upro-config-map
+                    key: service.url.commission
+              - name: service.url.interest
+                valueFrom:
+                  configMapKeyRef:
+                    name: upro-config-map
+                    key: service.url.interest
+              - name: service.url.payment
+                valueFrom:
+                  configMapKeyRef:
+                    name: upro-config-map
+                    key: service.url.payment
+              volumeMounts:
+                - name: global-environment
+                  mountPath: /opt/ibm/apm/serverconfig
+          volumes:
+            - name: global-environment
+              secret:
+                secretName: icam-server-secret
+                optional: true
+---
+apiVersion: app.ibm.com/v1alpha1
+kind: Deployable
+metadata:
+  name: upro-deployable-service-web
+  namespace: upro-icam-channel-ns
+  annotations:
+    app.ibm.com/is-local-deployable: "false"  
+  labels:
+    app: upro-application
+    subapp: bankweb
+spec:
+  template:
+    kind: Service
+    apiVersion: v1
+    metadata:
+      name: upro-bankweb
+      namespace: upro-icam-app-ns
+      labels:
+        app: upro-application
+        subname: bankweb
+      annotations:
+        # mcm.ibm.com/service-discovery: "{}"
+    spec:
+      type: NodePort
+      ports:
+      - name: my-http
+        port: 9090
+        targetPort: 9030
+      selector:
+        app: upro-application
+        subname: bankweb
+---
+apiVersion: app.ibm.com/v1alpha1
+kind: Deployable
+metadata:
+  name: upro-deployable-route-web
+  namespace: upro-icam-channel-ns
+  annotations:
+    app.ibm.com/is-local-deployable: "false"  
+  labels:
+    app: upro-application
+    subapp: bankweb
+spec:
+  template:
+    kind: Route
+    apiVersion: route.openshift.io/v1
+    metadata:
+      name: upro-bankweb
+      namespace: upro-icam-app-ns
+      labels:
+        app: upro-application
+        subname: bankweb
+    spec:
+      path: /
+      to:
+        kind: Service
+        name: upro-bankweb
+        weight: 100
+      port:
+        targetPort: my-http

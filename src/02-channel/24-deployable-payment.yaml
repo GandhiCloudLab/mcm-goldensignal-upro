@@ -1,0 +1,127 @@
+---
+# Source: upro-channel/templates/22-deployable-payment.yaml
+apiVersion: app.ibm.com/v1alpha1
+kind: Deployable
+metadata:
+  name: upro-deployable-deployment-payment
+  namespace: upro-icam-channel-ns
+  annotations:
+    app.ibm.com/is-local-deployable: "false"
+  labels:
+    app: upro-application
+    subapp: payment
+spec:
+  template:
+    kind: Deployment
+    apiVersion: apps/v1
+    metadata:
+      name: upro-payment
+      namespace: upro-icam-app-ns
+      labels:
+        app: upro-application
+        subname: payment      
+    spec:
+      selector:
+        matchLabels:
+          app: upro-application
+          subname: payment
+      replicas: 1
+      template:
+        metadata:
+          labels:
+            app: upro-application
+            subname: payment          
+        spec:
+          containers:
+            - name: container-payment
+              image: "gandhicloudlab/upro-payment-icam-130-2:latest"              
+              imagePullPolicy: Always
+              ports:
+                - name: my-http
+                  containerPort: 9033
+                  protocol: TCP
+                - name: https1
+                  containerPort: 8083
+              env:
+                - name: OPENTRACING_ENABLED
+                  value: "true"
+                - name: JAEGER_SAMPLER_TYPE
+                  value: probabilistic
+                - name: JAEGER_SAMPLER_PARAM
+                  value: "1"
+                - name: LATENCY_SAMPLER_PARAM
+                  value: "1"
+                - name: service.url.commission
+                  valueFrom:
+                    configMapKeyRef:
+                      name: upro-config-map
+                      key: service.url.commission
+              volumeMounts:
+                - name: global-environment
+                  mountPath: /opt/ibm/apm/serverconfig   
+          volumes:
+            - name: global-environment
+              secret:
+                secretName: icam-server-secret      
+                optional: true                 
+---
+apiVersion: app.ibm.com/v1alpha1
+kind: Deployable
+metadata:
+  name: upro-deployable-service-payment
+  namespace: upro-icam-channel-ns
+  annotations:
+    app.ibm.com/is-local-deployable: "false"
+  labels:
+    app: upro-application
+    subapp: payment
+spec:
+  template:
+    kind: Service
+    apiVersion: v1
+    metadata:
+      name: upro-payment
+      namespace: upro-icam-app-ns
+      labels:
+        app: upro-application
+        subname: payment
+      annotations:
+        # mcm.ibm.com/service-discovery: "{}"            
+    spec:
+      type: NodePort
+      ports:
+        - name: my-http
+          port: 9090
+          targetPort: 9033
+      selector:
+        app: upro-application
+        subname: payment
+---
+apiVersion: app.ibm.com/v1alpha1
+kind: Deployable
+metadata:
+  name: upro-deployable-route-payment
+  namespace: upro-icam-channel-ns
+  annotations:
+    app.ibm.com/is-local-deployable: "false"  
+  labels:
+    app: upro-application
+    subapp: payment
+spec:
+  template:
+    kind: Route
+    apiVersion: route.openshift.io/v1
+    metadata:
+      name: upro-payment
+      namespace: upro-icam-app-ns
+      labels:
+        app: upro-application
+        subname: payment
+    spec:
+      path: /
+      to:
+        kind: Service
+        name: upro-payment
+        weight: 100
+      port:
+        targetPort: my-http

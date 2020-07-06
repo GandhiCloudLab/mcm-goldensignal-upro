@@ -1,0 +1,9 @@
+.DS_Store
+
+
+# Runtime Data collector
+**/keyfiles
+dc-secret.yaml
+global.environment
+**/ibm-cloud-apm-dc-configpack/Readme
+non-sharable

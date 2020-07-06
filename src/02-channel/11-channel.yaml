@@ -1,0 +1,12 @@
+apiVersion: app.ibm.com/v1alpha1
+kind: Channel
+metadata:
+  name: upro-channel
+  namespace: upro-icam-channel-ns
+  labels:
+    app: upro-application
+spec:
+  type: Namespace
+  pathname: upro-icam-channel-ns
+  sourceNamespaces:
+    - upro-icam-app-ns

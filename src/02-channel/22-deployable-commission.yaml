@@ -1,0 +1,122 @@
+---
+# Source: upro-channel/templates/22-deployable-commission.yaml
+apiVersion: app.ibm.com/v1alpha1
+kind: Deployable
+metadata:
+  name: upro-deployable-deployment-commission
+  namespace: upro-icam-channel-ns
+  annotations:
+    app.ibm.com/is-local-deployable: "false"
+  labels:
+    app: upro-application
+    subapp: commission
+spec:
+  template:
+    kind: Deployment
+    apiVersion: apps/v1
+    metadata:
+      name: upro-commission
+      namespace: upro-icam-app-ns
+      labels:
+        app: upro-application
+        subname: commission
+    spec:
+      selector:
+        matchLabels:
+          app: upro-application
+          subname: commission
+      replicas: 1
+      template:
+        metadata:
+          labels:
+            app: upro-application
+            subname: commission          
+        spec:
+          containers:
+            - name: container-commission
+              image: "gandhicloudlab/upro-commission-icam-130-2:latest"
+              imagePullPolicy: Always
+              ports:
+                - name: my-http
+                  containerPort: 9031
+                  protocol: TCP
+                - name: https
+                  containerPort: 8083
+              env:
+                - name: OPENTRACING_ENABLED
+                  value: "true"
+                - name: JAEGER_SAMPLER_TYPE
+                  value: probabilistic
+                - name: JAEGER_SAMPLER_PARAM
+                  value: "1"
+                - name: LATENCY_SAMPLER_PARAM
+                  value: "1"
+              volumeMounts:
+                - name: global-environment
+                  mountPath: /opt/ibm/apm/serverconfig
+          volumes:
+            - name: global-environment
+              secret:
+                secretName: icam-server-secret      
+                optional: true        
+---
+apiVersion: app.ibm.com/v1alpha1
+kind: Deployable
+metadata:
+  name: upro-deployable-service-commission
+  namespace: upro-icam-channel-ns
+  annotations:
+    app.ibm.com/is-local-deployable: "false"
+  labels:
+    app: upro-application
+    subapp: commission
+spec:
+  template:
+    kind: Service
+    apiVersion: v1
+    metadata:
+      name: upro-commission
+      namespace: upro-icam-app-ns
+      labels:
+        app: upro-application
+        subname: commission
+      annotations:
+        # mcm.ibm.com/service-discovery: "{}"            
+    spec:
+      type: NodePort
+      ports:
+      - name: my-http
+        port: 9090
+        targetPort: 9031
+      selector:
+        app: upro-application
+        subname: commission
+---
+apiVersion: app.ibm.com/v1alpha1
+kind: Deployable
+metadata:
+  name: upro-deployable-route-commission
+  namespace: upro-icam-channel-ns
+  annotations:
+    app.ibm.com/is-local-deployable: "false"  
+  labels:
+    app: upro-application
+    subapp: commission
+spec:
+  template:
+    kind: Route
+    apiVersion: route.openshift.io/v1
+    metadata:
+      name: upro-commission
+      namespace: upro-icam-app-ns
+      labels:
+        app: upro-application
+        subname: commission
+    spec:
+      path: /
+      to:
+        kind: Service
+        name: upro-commission
+        weight: 100
+      port:
+        targetPort: my-http
