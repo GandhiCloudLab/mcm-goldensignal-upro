@@ -1,12 +1,13 @@
 # Installing Upro App in IBM Cloud Pak for Multicloud Management Version 1.3.0/1.3.2 
 
-## Download
+
+## 1. Preparation
+
+### 1.1 Download 
 
 Download this project from git
 
-## Preparation
-
-### 1. Change the Placement rule.
+### 1.2 Change the Placement rule.
 
 a. Open the file `src/03-subscription/21-placement.yaml`. The cluster related details should be like this.
 
@@ -22,7 +23,7 @@ a. Open the file `src/03-subscription/21-placement.yaml`. The cluster related de
 b. Replace the value `ocp43-mcm-gan-a` with your cluster name.
 
 
-### 2. Obtain the Hub server config info.
+### 1.3 Obtain the Hub server config info.
 
 1. Obtain the hub server config info using the below url. As as result you might have downloaded with `ibm-cloud-apm-dc-configpack.tar`.
 
@@ -40,7 +41,7 @@ datacollector/ibm-cloud-apm-dc-configpack/global.environment
 datacollector/ibm-cloud-apm-dc-configpack/readme.md
 ```
 
-### 3. Update the Secret with Hub config info
+### 1.4 Update the Secret with Hub config info
 
 1. Goto `install` folder in command prompt.
 
@@ -63,11 +64,9 @@ keyfile.p12: dGVzdA==
 
 ------------
 
-## Installation
+## 2.Installation
 
-### 1. Create Namespace in Hub Cluster
-
-#### 1. Log in to the hub cluster as an `account administrator`
+### 2.1 Log in to the hub cluster as an `account administrator`
 
 Run the below command.
 
@@ -80,7 +79,7 @@ ex:
 cloudctl login -a https://icp-console.ocp43-mcm-132-gan-7ec.us-east.containers.appdomain.cloud -u mcmaccadmin -n default --skip-ssl-validation
 ```
 
-#### 2. Create Namespace
+### 2.2 Create Namespace
 
 1. Goto `install` folder in command prompt
 
@@ -90,7 +89,7 @@ cloudctl login -a https://icp-console.ocp43-mcm-132-gan-7ec.us-east.containers.a
 sh 11-install-namespace-in-hub.sh
 ```
 
-#### 3. Patch the right `account id` in the namespace.
+### 2.3 Patch the right `account id` in the namespace.
 
 Replace `2a82-45f9` with right `account id` and run the below command.
 
@@ -100,7 +99,7 @@ kubectl annotate --overwrite namespace upro-icam-subscription-ns mcm.ibm.com/acc
 kubectl annotate --overwrite namespace upro-icam-app-ns mcm.ibm.com/accountID='2a82-45f9'
 ```
 
-#### 4. Log in to the hub cluster as an **account operator**
+### 2.4 Log in to the hub cluster as an **account operator**
 
 Login into hub cluster as an **account operator**. If you don't have operator user, stick to the account administrator  user.
 
@@ -108,7 +107,7 @@ Login into hub cluster as an **account operator**. If you don't have operator us
 cloudctl login -a <cluster URL> -u <account-admin-username> -p <account-operator-password> --skip-ssl-validation -c <account ID or name> -n <namespace>
 ```
 
-#### 5. Install the app in Hub
+### 2.5 Install the app in Hub
 
 1. Goto `install` folder in command prompt
 
@@ -120,7 +119,9 @@ sh 01-install.sh
 
 The application get installed in the mcm hub. Based the placement rule the deployables are placed on the right managed cluster.
 
-## Accessing the installed application
+------------
+
+## 3. Accessing the installed application
 
 1. Login into the managed cluster with ` oc login`  command
 
@@ -145,9 +146,11 @@ ex:
 http://upro-bankweb-upro-icam-app-ns.gdomain.cloud 
 ```
 
-## Viewing Golden Signals
+------------
 
-### Generate Load
+## 4. Viewing Golden Signals
+
+## 4.1 Generate Load
 
 Lets generate some load to see the golden signals.
 
@@ -165,7 +168,7 @@ sh 51-continous-trafic.sh
 
 After few minute of run, you can put Ctrl+C to stop the execution.
 
-### View Applications
+## 4.2 View Applications
 
 1. Goto MCM Hub console UI.
 
@@ -182,7 +185,7 @@ It will open the application resources toplogy screen.
 <img src="images/03-application-topology.png">
 
 
-### View Applications Topology
+## 4.3 View Applications Topology
 
 1. Click on `Monitor Health > App Monitoring` menu to open the application monitoring screen.
 
@@ -196,7 +199,7 @@ It will open the application toplogy screen.
 
 <img src="images/04-3-monitoring-graph.png">
 
-### View Golden Signals
+## 4.4 View Golden Signals
 
 1. Click on `Monitor Health > Infrastructure Monitoring` menu to open the monitoring screen.
 
@@ -229,3 +232,5 @@ This will shows us how the services are related.
 
 <img src="images/09-tracing1.png">
 <img src="images/10-tracing-details.png">
+
+------------
