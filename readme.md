@@ -216,16 +216,16 @@ List of kubernetes services displayed.
 
 It will open the Golden Signals page.
 
-<img src="images/06-goldensignal.png">
-<img src="images/07-goldensignal2.png">
+<img src="images/06-goldensignal1.png">
+<img src="images/07-goldensignal21.png">
 
 4. Click on `Service dependencies` to see the service dependencies page.
 
 This will shows us how the services are related.
 
-<img src="images/08-service-dependencies.png">
+<img src="images/08-service-dependencies1.png">
 
 5. Click on `Tracing icon` to see the transaction details page.
 
-<img src="images/09-tracing.png">
+<img src="images/09-tracing1.png">
 <img src="images/10-tracing-details.png">
