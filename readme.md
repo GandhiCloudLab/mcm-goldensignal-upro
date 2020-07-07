@@ -208,7 +208,7 @@ It will open the application resources toplogy screen.
 
 <img src="images/04-1-monitoring-menu.png">
 
-3. Click on `Upro applications` link.
+2. Click on `Upro applications` link.
 
 <img src="images/04-2-monitoring-apps.png">
 
