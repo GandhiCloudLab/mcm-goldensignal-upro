@@ -13,7 +13,7 @@ spec:
       - key: name
         operator: In
         values:
-        - ocp43-mcm-gan-a 
+        - deb-managed-app-1
 ---
 apiVersion: app.ibm.com/v1alpha1
 kind: PlacementRule
@@ -29,7 +29,7 @@ spec:
       - key: name
         operator: In
         values:
-        - ocp43-mcm-gan-a 
+        - deb-managed-app-1
 ---
 apiVersion: app.ibm.com/v1alpha1
 kind: PlacementRule
@@ -45,7 +45,7 @@ spec:
       - key: name
         operator: In
         values:
-        - ocp43-mcm-gan-a 
+        - deb-managed-app-1
 ---
 apiVersion: app.ibm.com/v1alpha1
 kind: PlacementRule
@@ -61,7 +61,7 @@ spec:
       - key: name
         operator: In
         values:
-        - ocp43-mcm-gan-a
+        - deb-managed-app-1
 ---
 apiVersion: app.ibm.com/v1alpha1
 kind: PlacementRule
@@ -77,6 +77,6 @@ spec:
       - key: name
         operator: In
         values:
-        - ocp43-mcm-gan-a 
+        - deb-managed-app-1
 ---
     
